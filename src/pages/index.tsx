@@ -29,7 +29,7 @@ export default function Home() {
       </Head>
 
       <HomeContainer ref={sliderRef} className="keen-slider">
-        <Product className="keen-slider__slide">
+        <Product className="keen-slider__slide" href="/product/1">
           <Image src={shirt1} width={520} height={480} alt="" />
           <footer>
             <strong> Shirt X</strong>
@@ -37,7 +37,7 @@ export default function Home() {
           </footer>
         </Product>
 
-        <Product className="keen-slider__slide">
+        <Product className="keen-slider__slide" href="/product/1">
           <Image src={shirt2} width={520} height={480} alt="" />
           <footer>
             <strong> Shirt X</strong>
@@ -45,14 +45,14 @@ export default function Home() {
           </footer>
         </Product>
 
-        <Product className="keen-slider__slide">
+        <Product className="keen-slider__slide" href="/product/1">
           <Image src={shirt3} width={520} height={480} alt="" />
           <footer>
             <strong> Shirt X</strong>
             <span> $ 79.90</span>
           </footer>
         </Product>
-        <Product className="keen-slider__slide">
+        <Product className="keen-slider__slide" href="/product/1">
           <Image src={shirt3} width={520} height={480} alt="" />
           <footer>
             <strong> Shirt X</strong>
