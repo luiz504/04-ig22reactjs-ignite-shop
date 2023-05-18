@@ -1,15 +1,16 @@
+import { GetStaticProps } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
-import { HomeContainer, Product } from '~/styles/pages/home'
+import Stripe from 'stripe'
 
 import { useKeenSlider } from 'keen-slider/react'
 import 'keen-slider/keen-slider.min.css'
 
 import { stripe } from '~/libs/stripe'
-import { GetServerSideProps } from 'next'
-import Stripe from 'stripe'
 
-export const getServerSideProps: GetServerSideProps = async () => {
+import { HomeContainer, Product } from '~/styles/pages/home'
+
+export const getStaticProps: GetStaticProps = async () => {
   const response = await stripe.products.list({
     expand: ['data.default_price'],
   })
@@ -27,7 +28,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     }
   })
 
-  return { props: { products } }
+  return { props: { products }, revalidate: 60 * 60 * 2 }
 }
 
 interface HomeProps {
