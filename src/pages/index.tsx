@@ -20,11 +20,16 @@ export const getStaticProps: GetStaticProps = async () => {
 
     const price = productPrice !== null ? productPrice / 100 : null
 
+    const priceFormatted = new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    }).format(price || 0)
+
     return {
       id: product.id,
       name: product.name,
       image_url: product.images[0],
-      price,
+      price: priceFormatted,
     }
   })
 
@@ -69,7 +74,7 @@ export default function Home({ products }: HomeProps) {
             <Image src={product.image_url} width={520} height={480} alt="" />
             <footer>
               <strong>{product.name}</strong>
-              <span> $ 79.90</span>
+              <span>{product.price}</span>
             </footer>
           </Product>
         ))}
