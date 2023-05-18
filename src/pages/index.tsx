@@ -1,21 +1,10 @@
 import Head from 'next/head'
-import { Roboto } from 'next/font/google'
-import { styled } from '~/styles'
+import Image from 'next/image'
+import { HomeContainer, Product } from '~/styles/pages/home'
 
-const roboto = Roboto({
-  subsets: ['latin'],
-  weight: ['500', '900'],
-  fallback: ['sanserif'],
-})
-
-const Button = styled('button', {
-  backgroundColor: '$rocketseat',
-  borderRadius: 4,
-  transition: 'filter 150ms',
-  '&:hover': {
-    filter: 'brightness(0.8)',
-  },
-})
+import shirt1 from '~/assets/shirts/shirt1.png'
+import shirt2 from '~/assets/shirts/shirt2.png'
+// import shirt3 from '~/assets/shirts/shirt3.png'
 
 export default function Home() {
   return (
@@ -29,11 +18,23 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <HomeContainer>
+        <Product>
+          <Image src={shirt1} width={520} height={480} alt="" />
+          <footer>
+            <strong> Shirt X</strong>
+            <span> $ 79.90</span>
+          </footer>
+        </Product>
 
-      <main className={`${roboto.className}`}>
-        Hello word
-        <Button>Hello</Button>
-      </main>
+        <Product>
+          <Image src={shirt2} width={520} height={480} alt="" />
+          <footer>
+            <strong> Shirt X</strong>
+            <span> $ 79.90</span>
+          </footer>
+        </Product>
+      </HomeContainer>
     </>
   )
 }
