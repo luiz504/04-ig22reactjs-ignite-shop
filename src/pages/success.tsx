@@ -1,7 +1,6 @@
 import { GetServerSideProps } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import Stripe from 'stripe'
 import { stripe } from '~/libs/stripe'
 
@@ -35,6 +34,14 @@ export default function Success({ customerName, product }: SuccessProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  if (!query.session_id) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }
   const sessionId = query.session_id as string
 
   const session = await stripe.checkout.sessions.retrieve(sessionId, {
@@ -44,7 +51,6 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const customerName = session.customer_details?.name
   const product = session.line_items?.data[0].price?.product as Stripe.Product
 
-  console.log('prod', session.line_items?.data[0].price?.product)
   return {
     props: {
       customerName,
