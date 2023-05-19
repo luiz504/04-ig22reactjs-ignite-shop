@@ -2,6 +2,7 @@ import { GetStaticPaths, GetStaticProps } from 'next'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import Stripe from 'stripe'
+import axios from 'axios'
 
 import { stripe } from '~/libs/stripe'
 
@@ -10,6 +11,7 @@ import {
   ProductContainer,
   ProductDetail,
 } from '~/styles/pages/product'
+import { useState } from 'react'
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
@@ -60,14 +62,29 @@ interface ProductProps {
   }
 }
 export default function Product({ product }: ProductProps) {
+  const [isCreatingCheckoutSections, setIsCreatingCheckoutSections] =
+    useState(false)
   const { isFallback } = useRouter()
 
   if (isFallback || !product) {
     return <div>Loading...</div>
   }
 
-  function handleBuyProduct() {
-    console.log('product', product)
+  async function handleBuyProduct() {
+    try {
+      setIsCreatingCheckoutSections(true)
+      const response = await axios.post('/api/checkout', {
+        priceId: product.defaultPriceId,
+      })
+
+      const { checkoutUrl } = response.data
+
+      window.location.href = checkoutUrl // external
+    } catch (err) {
+      // Connect with some observer tool like DataDog/Sentry
+      setIsCreatingCheckoutSections(false)
+      alert('Falha ao redirecionar ao checkout')
+    }
   }
   return (
     <ProductContainer>
@@ -82,7 +99,12 @@ export default function Product({ product }: ProductProps) {
 
         <p>{product.description}</p>
 
-        <button type="button" onClick={() => handleBuyProduct()}>
+        <button
+          type="button"
+          onClick={() => handleBuyProduct()}
+          disabled={isCreatingCheckoutSections}
+          data-loading={isCreatingCheckoutSections}
+        >
           Compre Agora
         </button>
       </ProductDetail>
