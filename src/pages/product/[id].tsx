@@ -38,9 +38,10 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({
   const productFormated = {
     id: product.id,
     name: product.name,
-    image_url: product.images[0],
+    imageUrl: product.images[0],
     price: priceFormatted,
     description: product.description,
+    defaultPriceId: (product.default_price as Stripe.Price).id,
   }
 
   return {
@@ -52,9 +53,10 @@ interface ProductProps {
   product: {
     id: string
     name: string
-    image_url: string
+    imageUrl: string
     price: number | null
     description: string
+    defaultPriceId: string
   }
 }
 export default function Product({ product }: ProductProps) {
@@ -64,16 +66,25 @@ export default function Product({ product }: ProductProps) {
     return <div>Loading...</div>
   }
 
+  function handleBuyProduct() {
+    console.log('product', product)
+  }
   return (
     <ProductContainer>
       <ImageContainer>
-        <Image src={product.image_url} height={480} width={520} alt="" />
+        <Image src={product.imageUrl} height={480} width={520} alt="" />
       </ImageContainer>
+
       <ProductDetail>
         <h1>{product.name}</h1>
+
         <span>{product.price}</span>
+
         <p>{product.description}</p>
-        <button>Compre Agora</button>
+
+        <button type="button" onClick={() => handleBuyProduct()}>
+          Compre Agora
+        </button>
       </ProductDetail>
     </ProductContainer>
   )
