@@ -1,4 +1,5 @@
 import { GetStaticPaths, GetStaticProps } from 'next'
+import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import Stripe from 'stripe'
@@ -12,6 +13,73 @@ import {
   ProductDetail,
 } from '~/styles/pages/product'
 import { useState } from 'react'
+
+interface ProductProps {
+  product: {
+    id: string
+    name: string
+    imageUrl: string
+    price: number | null
+    description: string
+    defaultPriceId: string
+  }
+}
+export default function Product({ product }: ProductProps) {
+  const [isCreatingCheckoutSections, setIsCreatingCheckoutSections] =
+    useState(false)
+  const { isFallback } = useRouter()
+
+  if (isFallback || !product) {
+    return <div>Loading...</div>
+  }
+
+  async function handleBuyProduct() {
+    try {
+      setIsCreatingCheckoutSections(true)
+      const response = await axios.post('/api/checkout', {
+        priceId: product.defaultPriceId,
+      })
+
+      const { checkoutUrl } = response.data
+
+      window.location.href = checkoutUrl // external
+    } catch (err) {
+      // Connect with some observer tool like DataDog/Sentry
+      setIsCreatingCheckoutSections(false)
+      alert('Falha ao redirecionar ao checkout')
+    }
+  }
+  return (
+    <>
+      <Head>
+        <title>{product.name} | Ignite Shop</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+      <ProductContainer>
+        <ImageContainer>
+          <Image src={product.imageUrl} height={480} width={520} alt="" />
+        </ImageContainer>
+
+        <ProductDetail>
+          <h1>{product.name}</h1>
+
+          <span>{product.price}</span>
+
+          <p>{product.description}</p>
+
+          <button
+            type="button"
+            onClick={() => handleBuyProduct()}
+            disabled={isCreatingCheckoutSections}
+            data-loading={isCreatingCheckoutSections}
+          >
+            Compre Agora
+          </button>
+        </ProductDetail>
+      </ProductContainer>
+    </>
+  )
+}
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
@@ -50,64 +118,4 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({
     props: { product: productFormated },
     revalidate: 60 * 60 * 1,
   }
-}
-interface ProductProps {
-  product: {
-    id: string
-    name: string
-    imageUrl: string
-    price: number | null
-    description: string
-    defaultPriceId: string
-  }
-}
-export default function Product({ product }: ProductProps) {
-  const [isCreatingCheckoutSections, setIsCreatingCheckoutSections] =
-    useState(false)
-  const { isFallback } = useRouter()
-
-  if (isFallback || !product) {
-    return <div>Loading...</div>
-  }
-
-  async function handleBuyProduct() {
-    try {
-      setIsCreatingCheckoutSections(true)
-      const response = await axios.post('/api/checkout', {
-        priceId: product.defaultPriceId,
-      })
-
-      const { checkoutUrl } = response.data
-
-      window.location.href = checkoutUrl // external
-    } catch (err) {
-      // Connect with some observer tool like DataDog/Sentry
-      setIsCreatingCheckoutSections(false)
-      alert('Falha ao redirecionar ao checkout')
-    }
-  }
-  return (
-    <ProductContainer>
-      <ImageContainer>
-        <Image src={product.imageUrl} height={480} width={520} alt="" />
-      </ImageContainer>
-
-      <ProductDetail>
-        <h1>{product.name}</h1>
-
-        <span>{product.price}</span>
-
-        <p>{product.description}</p>
-
-        <button
-          type="button"
-          onClick={() => handleBuyProduct()}
-          disabled={isCreatingCheckoutSections}
-          data-loading={isCreatingCheckoutSections}
-        >
-          Compre Agora
-        </button>
-      </ProductDetail>
-    </ProductContainer>
-  )
 }

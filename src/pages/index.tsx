@@ -10,6 +10,48 @@ import { stripe } from '~/libs/stripe'
 
 import { HomeContainer, Product } from '~/styles/pages/home'
 
+interface HomeProps {
+  products: {
+    id: string
+    name: string
+    image_url: string
+    price: number | null
+  }[]
+}
+export default function Home({ products }: HomeProps) {
+  const [sliderRef] = useKeenSlider({
+    slides: {
+      perView: 2.5,
+      spacing: 48,
+    },
+  })
+
+  return (
+    <>
+      <Head>
+        <title>Home | Ignite Shop</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+
+      <HomeContainer ref={sliderRef} className="keen-slider">
+        {products.map((product) => (
+          <Product
+            href={`/product/${product.id}`}
+            key={product.id}
+            className="keen-slider__slide"
+            prefetch={false}
+          >
+            <Image src={product.image_url} width={520} height={480} alt="" />
+            <footer>
+              <strong>{product.name}</strong>
+              <span>{product.price}</span>
+            </footer>
+          </Product>
+        ))}
+      </HomeContainer>
+    </>
+  )
+}
 export const getStaticProps: GetStaticProps = async () => {
   const response = await stripe.products.list({
     expand: ['data.default_price'],
@@ -34,52 +76,4 @@ export const getStaticProps: GetStaticProps = async () => {
   })
 
   return { props: { products }, revalidate: 60 * 60 * 2 }
-}
-
-interface HomeProps {
-  products: {
-    id: string
-    name: string
-    image_url: string
-    price: number | null
-  }[]
-}
-export default function Home({ products }: HomeProps) {
-  const [sliderRef] = useKeenSlider({
-    slides: {
-      perView: 2.5,
-      spacing: 48,
-    },
-  })
-
-  return (
-    <>
-      <Head>
-        <title>Ignite Shop</title>
-        <meta
-          name="description"
-          content="04 Ignite ReactJs, NextJs Fundamentals"
-        />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <HomeContainer ref={sliderRef} className="keen-slider">
-        {products.map((product) => (
-          <Product
-            href={`/product/${product.id}`}
-            key={product.id}
-            className="keen-slider__slide"
-            prefetch={false}
-          >
-            <Image src={product.image_url} width={520} height={480} alt="" />
-            <footer>
-              <strong>{product.name}</strong>
-              <span>{product.price}</span>
-            </footer>
-          </Product>
-        ))}
-      </HomeContainer>
-    </>
-  )
 }

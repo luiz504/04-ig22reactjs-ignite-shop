@@ -22,6 +22,7 @@ export const Product = styled(Link, {
 
   img: {
     objectFit: 'cover',
+    width: 'auto',
   },
 
   footer: {
