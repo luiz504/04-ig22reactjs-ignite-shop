@@ -29,8 +29,16 @@ export default function Product({ product }: ProductProps) {
     useState(false)
   const { isFallback } = useRouter()
 
-  if (isFallback || !product) {
-    return <div>Loading...</div>
+  if (isFallback) {
+    return (
+      <div
+        style={{
+          height: 656,
+        }}
+      >
+        Loading....
+      </div>
+    )
   }
 
   async function handleBuyProduct() {
@@ -73,7 +81,7 @@ export default function Product({ product }: ProductProps) {
             disabled={isCreatingCheckoutSections}
             data-loading={isCreatingCheckoutSections}
           >
-            Compre Agora
+            Colocar na Sacola
           </button>
         </ProductDetail>
       </ProductContainer>

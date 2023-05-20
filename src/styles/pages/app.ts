@@ -11,7 +11,7 @@ export const AppContainer = styled('div', {
 export const Header = styled('header', {
   padding: '2rem 0rem',
   width: '100%',
-  maxWidth: 1180,
+  maxWidth: 1280,
   margin: '0 auto',
   gap: '1rem',
 
@@ -32,6 +32,8 @@ export const CartBtn = styled('button', {
   border: 0,
   color: '$gray400',
   display: 'flex',
+  cursor: 'pointer',
+
   span: {
     position: 'absolute',
     top: 0,

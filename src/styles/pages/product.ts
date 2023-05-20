@@ -5,7 +5,7 @@ export const ProductContainer = styled('main', {
   gridTemplateColumns: '1fr 1fr',
   alignItems: 'stretch',
   gap: '4rem',
-  maxWidth: 1180,
+  maxWidth: 1280,
   width: '100%',
   margin: '0 auto',
 })
