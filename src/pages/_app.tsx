@@ -5,6 +5,8 @@ import Link from 'next/link'
 
 import logoFullSVG from '~/assets/logoFull.svg'
 
+import SidebarCart from './components/SidebarCart'
+
 import { globalStyles } from '~/styles/global'
 import { AppContainer, CartBtn, Header } from '~/styles/pages/app'
 
@@ -19,10 +21,12 @@ export default function App({ Component, pageProps }: AppProps) {
           <Image role="button" src={logoFullSVG} alt="" />
         </Link>
 
-        <CartBtn hasProduct={!!count} type="button">
-          <Handbag size={24} weight="bold" />
-          <span>{count}</span>
-        </CartBtn>
+        <SidebarCart>
+          <CartBtn hasProduct={!!count} type="button">
+            <Handbag size={24} weight="bold" />
+            <span>{count}</span>
+          </CartBtn>
+        </SidebarCart>
       </Header>
       <Component {...pageProps} />
     </AppContainer>
