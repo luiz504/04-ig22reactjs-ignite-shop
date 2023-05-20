@@ -1,26 +1,28 @@
+import { Handbag } from '@phosphor-icons/react'
 import type { AppProps } from 'next/app'
 import Image from 'next/image'
-
-import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 import logoFullSVG from '~/assets/logoFull.svg'
 
 import { globalStyles } from '~/styles/global'
-import { AppContainer, Header } from '~/styles/pages/app'
+import { AppContainer, CartBtn, Header } from '~/styles/pages/app'
 
 globalStyles()
 
 export default function App({ Component, pageProps }: AppProps) {
-  const router = useRouter()
+  const count: number = 1
   return (
     <AppContainer>
       <Header>
-        <Image
-          role="button"
-          src={logoFullSVG}
-          alt=""
-          onClick={() => router.back()}
-        />
+        <Link href={'/'}>
+          <Image role="button" src={logoFullSVG} alt="" />
+        </Link>
+
+        <CartBtn hasProduct={!!count} type="button">
+          <Handbag size={24} weight="bold" />
+          <span>{count}</span>
+        </CartBtn>
       </Header>
       <Component {...pageProps} />
     </AppContainer>

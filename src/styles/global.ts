@@ -15,4 +15,9 @@ export const globalStyles = globalCss({
     fontFamily: 'Roboto, sans-serif',
     fontWeight: 400,
   },
+  ':focus': {
+    outlineColor: '$gray100',
+    outlineStyle: 'solid',
+    outlineWidth: 2,
+  },
 })
