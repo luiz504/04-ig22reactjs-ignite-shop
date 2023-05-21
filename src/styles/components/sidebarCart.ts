@@ -52,6 +52,7 @@ export const Header = styled('header', {
     padding: '0.25rem',
     display: 'flex',
     borderRadius: 2,
+    cursor: 'pointer',
   },
 
   h2: {
@@ -224,6 +225,7 @@ export const Footer = styled('footer', {
     },
     '&:disabled': {
       opacity: 0.6,
+      cursor: 'default',
     },
   },
 })

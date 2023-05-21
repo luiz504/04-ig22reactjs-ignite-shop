@@ -1,34 +1,29 @@
-import { Handbag } from '@phosphor-icons/react'
 import type { AppProps } from 'next/app'
-import Image from 'next/image'
-import Link from 'next/link'
+import { CartProvider } from 'use-shopping-cart'
 
-import logoFullSVG from '~/assets/logoFull.svg'
+import { GlobalProvider } from '~/contexts/globalContext'
 
-import SidebarCart from './components/SidebarCart'
+import Header from './components/Header'
 
 import { globalStyles } from '~/styles/global'
-import { AppContainer, CartBtn, Header } from '~/styles/pages/app'
+import { AppContainer } from '~/styles/pages/app'
 
 globalStyles()
 
 export default function App({ Component, pageProps }: AppProps) {
-  const count: number = 1
   return (
-    <AppContainer>
-      <Header>
-        <Link href={'/'}>
-          <Image role="button" src={logoFullSVG} alt="" />
-        </Link>
-
-        <SidebarCart>
-          <CartBtn hasProduct={!!count} type="button">
-            <Handbag size={24} weight="bold" />
-            <span>{count}</span>
-          </CartBtn>
-        </SidebarCart>
-      </Header>
-      <Component {...pageProps} />
-    </AppContainer>
+    <GlobalProvider>
+      <CartProvider
+        cartMode="checkout-session"
+        stripe={process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string}
+        currency="BRL"
+        shouldPersist
+      >
+        <AppContainer>
+          <Header />
+          <Component {...pageProps} />
+        </AppContainer>
+      </CartProvider>
+    </GlobalProvider>
   )
 }

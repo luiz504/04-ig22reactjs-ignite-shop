@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { styled } from '..'
 
 export const HomeContainer = styled('main', {
@@ -10,7 +9,7 @@ export const HomeContainer = styled('main', {
   padding: '0.25rem',
 })
 
-export const Product = styled(Link, {
+export const Product = styled('div', {
   background: 'linear-gradient(180deg, #1EA483 0%, #7465d4 100%)',
   borderRadius: 8,
   position: 'relative',
@@ -19,6 +18,18 @@ export const Product = styled(Link, {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
+
+  a: {
+    outline: '2px solid white',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+
+    '&:focus': {
+      outline: 'none',
+    },
+  },
 
   img: {
     objectFit: 'cover',
@@ -57,21 +68,6 @@ export const Product = styled(Link, {
         color: '$green300',
       },
     },
-
-    button: {
-      display: 'none',
-      borderRadius: 6,
-      padding: '0.75rem',
-      background: '$green500',
-      border: 0,
-      color: '$white',
-      cursor: 'pointer',
-
-      '&:hover': {
-        background: '$green300',
-        transition: 'background 150ms',
-      },
-    },
   },
 
   '&:hover, &:focus, &:focus-within': {
@@ -81,6 +77,57 @@ export const Product = styled(Link, {
 
       button: {
         display: 'flex',
+      },
+    },
+  },
+})
+
+export const CartHandlerBtn = styled('button', {
+  display: 'none',
+  position: 'relative',
+  borderRadius: 6,
+  padding: '0.75rem',
+  background: '$green500',
+  border: 0,
+  color: '$white',
+  cursor: 'pointer',
+
+  '&:hover': {
+    background: '$green300',
+    transition: 'background 150ms',
+  },
+  span: {
+    position: 'absolute',
+    top: 0,
+    left: '100%',
+
+    height: 30,
+    minWidth: 30,
+
+    border: '3px solid $gray800',
+
+    opacity: 0,
+    padding: '0 4px',
+
+    background: '$gray800',
+    color: '$white',
+    fontSize: '$sm',
+    fontWeight: 'bold',
+    borderRadius: 99999,
+
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transform: 'translate(-18px, -8px)',
+  },
+
+  variants: {
+    addedToTheBag: {
+      true: {
+        span: {
+          opacity: 1,
+          transition: 'opacity 150ms',
+        },
       },
     },
   },

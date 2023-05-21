@@ -2,22 +2,29 @@ import { GetStaticProps } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import Stripe from 'stripe'
+import { useShoppingCart } from 'use-shopping-cart'
 
 import { useKeenSlider } from 'keen-slider/react'
 import 'keen-slider/keen-slider.min.css'
 
 import { stripe } from '~/libs/stripe'
 
-import { HomeContainer, Product } from '~/styles/pages/home'
+import { CartHandlerBtn, HomeContainer, Product } from '~/styles/pages/home'
 import { Handbag } from '@phosphor-icons/react'
+import Link from 'next/link'
+import { useGlobalContext } from '~/contexts/globalContext'
 
+type ProductType = {
+  id: string
+  name: string
+  imageUrl: string
+  price: number | null
+  priceFormatted: string
+  currency: string
+  price_id: string
+}
 interface HomeProps {
-  products: {
-    id: string
-    name: string
-    image_url: string
-    price: number | null
-  }[]
+  products: ProductType[]
 }
 export default function Home({ products }: HomeProps) {
   const [sliderRef] = useKeenSlider({
@@ -27,6 +34,24 @@ export default function Home({ products }: HomeProps) {
     },
   })
 
+  const { handleOpenSidebarCart } = useGlobalContext()
+
+  const { addItem, cartDetails } = useShoppingCart()
+
+  const handleClickProductBag = (product: ProductType) => {
+    const alredyInTheBag = !!cartDetails?.[product.id]?.quantity
+    if (!alredyInTheBag) {
+      addItem({
+        id: product.id,
+        name: product.name,
+        currency: product.currency,
+        image: product.imageUrl,
+        price: product.price || 0,
+      })
+    } else {
+      handleOpenSidebarCart(true)
+    }
+  }
   return (
     <>
       <Head>
@@ -36,23 +61,25 @@ export default function Home({ products }: HomeProps) {
 
       <HomeContainer ref={sliderRef} className="keen-slider">
         {products.map((product) => (
-          <Product
-            href={`/product/${product.id}`}
-            key={product.id}
-            className="keen-slider__slide"
-            prefetch={false}
-          >
-            <Image src={product.image_url} width={520} height={480} alt="" />
+          <Product key={product.id} className="keen-slider__slide">
+            <Link href={`/product/${product.id}`} prefetch={false}>
+              <Image src={product.imageUrl} width={520} height={480} alt="" />
+            </Link>
 
             <footer>
               <div>
                 <strong>{product.name}</strong>
-                <span>{product.price}</span>
+                <span>{product.priceFormatted}</span>
               </div>
 
-              <button type="button">
+              <CartHandlerBtn
+                type="button"
+                addedToTheBag={!!cartDetails?.[product.id]?.quantity}
+                onClick={() => handleClickProductBag(product)}
+              >
                 <Handbag size={32} weight="bold" />
-              </button>
+                <span>{cartDetails?.[product.id]?.quantity}</span>
+              </CartHandlerBtn>
             </footer>
           </Product>
         ))}
@@ -60,27 +87,33 @@ export default function Home({ products }: HomeProps) {
     </>
   )
 }
+
 export const getStaticProps: GetStaticProps = async () => {
   const response = await stripe.products.list({
     expand: ['data.default_price'],
   })
 
-  const products = response.data.map((product) => {
-    const productPrice = (product.default_price as Stripe.Price).unit_amount
+  const products = response.data.map((prod) => {
+    const productPrice = (prod.default_price as Stripe.Price).unit_amount
 
-    const price = productPrice !== null ? productPrice / 100 : null
+    const price = productPrice ? productPrice / 100 : 0
 
     const priceFormatted = new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
     }).format(price || 0)
 
-    return {
-      id: product.id,
-      name: product.name,
-      image_url: product.images[0],
-      price: priceFormatted,
+    const product: ProductType = {
+      id: prod.id,
+      name: prod.name,
+      imageUrl: prod.images[0],
+      price: productPrice,
+      priceFormatted,
+      currency: (prod.default_price as Stripe.Price)?.currency,
+      price_id: (prod.default_price as Stripe.Price)?.id,
     }
+
+    return product
   })
 
   return { props: { products }, revalidate: 60 * 60 * 2 }
