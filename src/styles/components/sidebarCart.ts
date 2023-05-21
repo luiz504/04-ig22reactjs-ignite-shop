@@ -204,7 +204,7 @@ export const Article = styled('article', {
 export const Footer = styled('footer', {
   padding: '0 3rem 3rem 3rem',
 
-  button: {
+  'button, a': {
     width: '100%',
     padding: '1.25rem',
 
@@ -217,6 +217,11 @@ export const Footer = styled('footer', {
     fontSize: '$md',
     lineHeight: 1.6,
     cursor: 'pointer',
+
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textDecoration: 'none',
 
     '&:not(:disabled):hover': {
       backgroundColor: '$green300',

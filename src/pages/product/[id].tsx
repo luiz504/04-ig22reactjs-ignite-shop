@@ -3,7 +3,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import Stripe from 'stripe'
-import axios from 'axios'
+import { useShoppingCart } from 'use-shopping-cart'
 
 import { stripe } from '~/libs/stripe'
 
@@ -12,7 +12,8 @@ import {
   ProductContainer,
   ProductDetail,
 } from '~/styles/pages/product'
-import { useState } from 'react'
+
+import { useGlobalContext } from '~/contexts/globalContext'
 
 interface ProductProps {
   product: {
@@ -20,14 +21,17 @@ interface ProductProps {
     name: string
     imageUrl: string
     price: number | null
+    priceFormated: string
     description: string
-    defaultPriceId: string
+    priceId: string
+    currency: string
   }
 }
 export default function Product({ product }: ProductProps) {
-  const [isCreatingCheckoutSections, setIsCreatingCheckoutSections] =
-    useState(false)
   const { isFallback } = useRouter()
+
+  const { handleOpenSidebarCart } = useGlobalContext()
+  const { addItem, cartDetails } = useShoppingCart()
 
   if (isFallback) {
     return (
@@ -41,20 +45,19 @@ export default function Product({ product }: ProductProps) {
     )
   }
 
-  async function handleBuyProduct() {
-    try {
-      setIsCreatingCheckoutSections(true)
-      const response = await axios.post('/api/checkout', {
-        priceId: product.defaultPriceId,
+  const alreadyInTheBag = !!cartDetails?.[product.id]?.quantity
+  const handleAddItemOrOpenSidebar = () => {
+    if (!alreadyInTheBag) {
+      addItem({
+        id: product.id,
+        name: product.name,
+        currency: product.currency,
+        image: product.imageUrl,
+        price: product.price || 0,
+        price_id: product.priceId,
       })
-
-      const { checkoutUrl } = response.data
-
-      window.location.href = checkoutUrl // external
-    } catch (err) {
-      // Connect with some observer tool like DataDog/Sentry
-      setIsCreatingCheckoutSections(false)
-      alert('Falha ao redirecionar ao checkout')
+    } else {
+      handleOpenSidebarCart(true)
     }
   }
   return (
@@ -75,13 +78,8 @@ export default function Product({ product }: ProductProps) {
 
           <p>{product.description}</p>
 
-          <button
-            type="button"
-            onClick={() => handleBuyProduct()}
-            disabled={isCreatingCheckoutSections}
-            data-loading={isCreatingCheckoutSections}
-          >
-            Colocar na Sacola
+          <button type="button" onClick={handleAddItemOrOpenSidebar}>
+            {alreadyInTheBag ? 'Abrir Sacola' : 'Colocar na Sacola'}
           </button>
         </ProductDetail>
       </ProductContainer>
@@ -108,18 +106,20 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({
   const productPrice = (product.default_price as Stripe.Price).unit_amount
   const price = productPrice !== null ? productPrice / 100 : null
 
-  const priceFormatted = new Intl.NumberFormat('pt-BR', {
+  const priceFormated = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
   }).format(price || 0)
 
-  const productFormated = {
+  const productFormated: ProductProps['product'] = {
     id: product.id,
     name: product.name,
     imageUrl: product.images[0],
-    price: priceFormatted,
-    description: product.description,
-    defaultPriceId: (product.default_price as Stripe.Price).id,
+    price: productPrice,
+    priceFormated,
+    description: product.description || '',
+    priceId: (product.default_price as Stripe.Price).id,
+    currency: (product.default_price as Stripe.Price).currency,
   }
 
   return {

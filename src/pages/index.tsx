@@ -21,7 +21,7 @@ type ProductType = {
   price: number | null
   priceFormatted: string
   currency: string
-  price_id: string
+  priceId: string
 }
 interface HomeProps {
   products: ProductType[]
@@ -47,6 +47,7 @@ export default function Home({ products }: HomeProps) {
         currency: product.currency,
         image: product.imageUrl,
         price: product.price || 0,
+        price_id: product.priceId,
       })
     } else {
       handleOpenSidebarCart(true)
@@ -110,7 +111,7 @@ export const getStaticProps: GetStaticProps = async () => {
       price: productPrice,
       priceFormatted,
       currency: (prod.default_price as Stripe.Price)?.currency,
-      price_id: (prod.default_price as Stripe.Price)?.id,
+      priceId: (prod.default_price as Stripe.Price)?.id,
     }
 
     return product

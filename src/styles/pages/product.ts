@@ -66,9 +66,5 @@ export const ProductDetail = styled('div', {
       backgroundColor: '$green300',
       transition: 'background-color .2s',
     },
-    '&[data-loading="true"]:disabled': {
-      cursor: 'progress',
-      opacity: 0.6,
-    },
   },
 })
