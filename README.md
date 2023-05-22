@@ -1,6 +1,8 @@
 ## Getting Started
 
-First, run the development server:
+First, create a file .env.local following the file .env.example using your Stripe Keys
+
+Then, run the development server:
 
 ```bash
 pnpm install
