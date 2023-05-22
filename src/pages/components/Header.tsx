@@ -14,7 +14,7 @@ export default function Header() {
   return (
     <HeaderContainer>
       <Link href={'/'}>
-        <Image role="button" src={logoFullSVG} alt="" />
+        <Image src={logoFullSVG} alt="" />
       </Link>
 
       <SidebarCart>

@@ -8,6 +8,21 @@ export const ProductContainer = styled('main', {
   maxWidth: 1280,
   width: '100%',
   margin: '0 auto',
+
+  '@media (max-width: 1440px)': {
+    padding: '0 0.5rem',
+  },
+  '@media (max-width: 1280px)': {
+    gap: '2rem',
+  },
+  '@media (max-width: 900px)': {
+    gridTemplateColumns: '50% 1fr',
+  },
+  '@media (max-width: 675px)': {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
 })
 
 export const ImageContainer = styled('div', {
@@ -23,6 +38,11 @@ export const ImageContainer = styled('div', {
 
   img: {
     objectFit: 'cover',
+  },
+
+  '@media (max-width: 675px)': {
+    height: 400,
+    padding: '.5rem',
   },
 })
 
@@ -66,5 +86,10 @@ export const ProductDetail = styled('div', {
       backgroundColor: '$green300',
       transition: 'background-color .2s',
     },
+  },
+  '@media (max-width: 675px)': {
+    padding: '.5rem',
+    marginBottom: '2rem',
+    p: { marginBottom: '2rem', marginTop: '1.5rem' },
   },
 })

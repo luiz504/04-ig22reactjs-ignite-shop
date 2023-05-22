@@ -5,6 +5,8 @@ import { useRouter } from 'next/router'
 import Stripe from 'stripe'
 import { useShoppingCart } from 'use-shopping-cart'
 
+import MainLayout from '../layouts/MainLayout'
+
 import { stripe } from '~/libs/stripe'
 
 import {
@@ -14,6 +16,7 @@ import {
 } from '~/styles/pages/product'
 
 import { useGlobalContext } from '~/contexts/globalContext'
+import { NextPageWithLayout } from '../_app'
 
 interface ProductProps {
   product: {
@@ -27,7 +30,7 @@ interface ProductProps {
     currency: string
   }
 }
-export default function Product({ product }: ProductProps) {
+const Product: NextPageWithLayout<ProductProps> = ({ product }) => {
   const { isFallback } = useRouter()
 
   const { handleOpenSidebarCart } = useGlobalContext()
@@ -74,7 +77,7 @@ export default function Product({ product }: ProductProps) {
         <ProductDetail>
           <h1>{product.name}</h1>
 
-          <span>{product.price}</span>
+          <span>{product.priceFormated}</span>
 
           <p>{product.description}</p>
 
@@ -127,3 +130,9 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({
     revalidate: 60 * 60 * 1,
   }
 }
+
+Product.getLayout = (page) => {
+  return <MainLayout>{page}</MainLayout>
+}
+
+export default Product

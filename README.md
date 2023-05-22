@@ -20,3 +20,16 @@ Here are the steps for the challenge:
 - Save all the selected items in your application and display the number of items in the shopping cart.
 - Send the stored shopping cart data to the checkout route, where you will generate a checkout session with the necessary `line_items`.
 - To complete this challenge, you will need to perform some research to understand the Stripe API.
+
+#### Incremental
+
+Description of features not requested in the challenge but were made as research to seek knowledge:
+
+- Now the user is able to select the quantity of each product and increment or decrement it as well.
+
+#### Points to be addressed:
+
+- How the app behaves when the Stribe isn't configured.
+- How the app behaves when the products are not available and the user tries to checkout with them.
+- It is a good learning app to start learning TRPC, even though it has only one API.
+- Refactor the app directory and compare the changes.

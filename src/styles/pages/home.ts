@@ -25,6 +25,7 @@ export const Product = styled('div', {
     justifyContent: 'center',
     alignItems: 'center',
     height: '100%',
+    flex: 1,
 
     '&:focus': {
       outline: 'none',

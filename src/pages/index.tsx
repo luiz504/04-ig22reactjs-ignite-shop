@@ -13,6 +13,8 @@ import { CartHandlerBtn, HomeContainer, Product } from '~/styles/pages/home'
 import { Handbag } from '@phosphor-icons/react'
 import Link from 'next/link'
 import { useGlobalContext } from '~/contexts/globalContext'
+import { NextPageWithLayout } from './_app'
+import MainLayout from './layouts/MainLayout'
 
 type ProductType = {
   id: string
@@ -26,11 +28,37 @@ type ProductType = {
 interface HomeProps {
   products: ProductType[]
 }
-export default function Home({ products }: HomeProps) {
+const Home: NextPageWithLayout<HomeProps> = ({ products }) => {
   const [sliderRef] = useKeenSlider({
+    breakpoints: {
+      '(min-width: 550px)': {
+        slides: {
+          perView: 1.5,
+          spacing: 32,
+        },
+      },
+      '(min-width: 840px)': {
+        slides: {
+          perView: 2,
+          spacing: 32,
+        },
+      },
+      '(min-width: 1200px)': {
+        slides: {
+          perView: 2.5,
+          spacing: 32,
+        },
+      },
+      '(min-width: 1440px)': {
+        slides: {
+          perView: 3,
+          spacing: 48,
+        },
+      },
+    },
     slides: {
-      perView: 3,
-      spacing: 48,
+      perView: 1,
+      spacing: 32,
     },
   })
 
@@ -119,3 +147,9 @@ export const getStaticProps: GetStaticProps = async () => {
 
   return { props: { products }, revalidate: 60 * 60 * 2 }
 }
+
+Home.getLayout = (page) => {
+  return <MainLayout>{page}</MainLayout>
+}
+
+export default Home
